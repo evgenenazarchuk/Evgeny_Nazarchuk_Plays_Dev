@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx_docker_compose
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx:/opt/nginx
+      - ./default.conf:/etc/nginx/http.d/default.conf
+      - ./postgres:/opt/store/postgres
