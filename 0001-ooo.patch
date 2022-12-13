@@ -1,0 +1,17 @@
+From 4e230d793fd90241e77d1192073199236f8644ac Mon Sep 17 00:00:00 2001
+From: Evgeny Nazarchuk <e.nazarchuk96@gmail.com>
+Date: Tue, 13 Dec 2022 09:51:39 +0300
+Subject: [PATCH] ooo
+To: e.nazarchuk96@gmail.com
+
+---
+ ooo111 | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 ooo111
+
+diff --git a/ooo111 b/ooo111
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.25.1.windows.1
+
