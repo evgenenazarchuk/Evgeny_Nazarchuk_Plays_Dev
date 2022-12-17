@@ -1,0 +1,70 @@
+- name: Install required packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-pip
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+    - amazon-linux-extras
+  when: ansible_distribution == "Amazon"
+
+- name: Add extras repository
+  shell: yum-config-manager --enable extras
+
+- name: Enable Some packages from amazon-linux-extras packages
+  shell: "amazon-linux-extras enable python3.8 ansible2 docker"
+
+- name: clean yum metadata cache
+  command: yum clean metadata
+  args:
+    warn: false
+
+- name: Ensure a list of yum packages are installed
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - python3.8
+      - docker
+
+- name: Enable Docker CE service at startup
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add user vagrant to docker group
+  user:
+    name: ec2-user
+    groups: docker
+    append: yes
+
+- name: Upgrade pip3
+  shell: "python3.8 -m pip install pip --upgrade"
+
+- name: Ensure Python pip packages are installed
+  pip:
+    name: "{{ packages }}"
+    executable: /usr/local/bin/pip3.8
+  vars:
+    packages:
+      - docker-compose
+
+- name: Pull default Docker image
+  community.docker.docker_image:
+    name: "{{ default_container_image }}"
+    source: pull
+
+- name: creating a docker container for webserver
+  community.general.docker_container:
+    name: webserver
+    image: "{{ default_container_image }}"
+    ports:
+      - "80:80"
+      - "443:443"
+    state: started
+    detach: yes
