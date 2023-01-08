@@ -1,0 +1,33 @@
+groups:
+- name: CPU
+  rules:
+  - alert: HostHighCpuLoad
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 10
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: Host high CPU load (instance {{ $labels.instance }})
+      description: "CPU load is > 20%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+- name: Memory
+  rules:
+  - alert: RabbitmqMemoryHigh
+    expr: node_memory_MemAvailable_bytes{job="node2"} > 605798400
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: Rabbitmq memory high (instance {{ $labels.instance }})
+      description: "A node use more than 15% of allocated RAM\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+- name: test
+  rules:
+  - alert: PrometheusTargetMissing
+    expr: up == 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Prometheus target missing (instance {{ $labels.instance }})"
+      description: "A Prometheus target has disappeared. An exporter might be crashed. VALUE = {{ $value }}  LABELS: {{ $labels }}"
